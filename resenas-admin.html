@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Reseñas — Crisve Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: #f8f5f0;
+    color: #1e2a2a;
+    line-height: 1.4;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* LOGIN */
+  #loginScreen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .login-box {
+    background: #fff; max-width: 380px; width: 100%; padding: 2.5rem 2rem;
+    border-radius: 8px; box-shadow: 0 12px 40px -12px rgba(0,0,0,0.15); text-align: center;
+  }
+  .login-box h1 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .login-box p { color: #5a6e6e; font-size: 0.85rem; margin-bottom: 1.6rem; }
+  .form-group { margin-bottom: 1.1rem; text-align: left; }
+  .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #1e2a2a; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input {
+    width: 100%; border: 1.5px solid #ece7e0; padding: 0.65rem 0.8rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; border-radius: 4px; background: #fdfcfa;
+  }
+  .form-group input:focus { outline: none; border-color: #d37e2c; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.75rem 1.6rem; border-radius: 4px; font-weight: 600; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; font-size: 0.9rem; width: 100%; }
+  .btn-dark { background: #1e2a2a; color: white; }
+  .btn-dark:hover { background: #d37e2c; }
+  .btn-dark:disabled { opacity: 0.6; cursor: not-allowed; }
+  .login-error { background: #fdeceb; color: #a3312a; border: 1px solid #f3c6c2; padding: 0.7rem 0.9rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+  .login-error.show { display: block; }
+
+  /* DASHBOARD */
+  #dashboard { display: none; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+  .admin-header h1 { font-size: 1.5rem; }
+  .admin-header .sub { color: #5a6e6e; font-size: 0.85rem; }
+  .btn-logout { background: transparent; border: 1.5px solid #1e2a2a; color: #1e2a2a; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600; font-size: 0.82rem; cursor: pointer; width: auto; }
+  .btn-logout:hover { background: #1e2a2a; color: white; }
+
+  .admin-tabs { display: flex; gap: 0.3rem; border-bottom: 2px solid #ece7e0; margin-bottom: 1.5rem; }
+  .admin-tab { background: transparent; border: none; padding: 0.7rem 1.1rem; font-size: 0.88rem; font-weight: 600; font-family: 'Instrument Sans', sans-serif; color: #5a6e6e; cursor: pointer; position: relative; }
+  .admin-tab.active { color: #1e2a2a; }
+  .admin-tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: #d37e2c; }
+  .admin-tab .count { background: #ece7e0; color: #1e2a2a; border-radius: 20px; padding: 0.05rem 0.5rem; font-size: 0.72rem; margin-left: 0.35rem; }
+  .admin-tab.active .count { background: #d37e2c; color: white; }
+
+  .resena-card { background: #fff; border: 1px solid #ece7e0; border-radius: 8px; padding: 1.4rem; margin-bottom: 1rem; }
+  .resena-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+  .resena-top strong { font-size: 1.02rem; }
+  .resena-fecha { font-size: 0.75rem; color: #8a9a9a; }
+  .estrellas { color: #f0a34b; font-size: 1rem; margin: 0.3rem 0 0.6rem; letter-spacing: 2px; }
+  .resena-mensaje { color: #2c3e3e; font-size: 0.93rem; line-height: 1.55; margin-bottom: 0.8rem; }
+  .resena-foto { max-width: 220px; width: 100%; border-radius: 4px; display: block; margin-bottom: 0.9rem; }
+  .resena-acciones { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn-accion { width: auto; padding: 0.55rem 1.1rem; font-size: 0.82rem; border-radius: 4px; }
+  .btn-publicar { background: #1e6b3a; color: white; }
+  .btn-publicar:hover { background: #16552d; }
+  .btn-rechazar { background: transparent; border: 1.5px solid #a3312a; color: #a3312a; }
+  .btn-rechazar:hover { background: #a3312a; color: white; }
+  .btn-restaurar { background: transparent; border: 1.5px solid #1e2a2a; color: #1e2a2a; }
+  .btn-restaurar:hover { background: #1e2a2a; color: white; }
+  .btn-eliminar { background: transparent; border: 1.5px solid #ccc; color: #888; }
+  .btn-eliminar:hover { border-color: #a3312a; color: #a3312a; }
+
+  .respuesta-box { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #ece7e0; }
+  .respuesta-box label { display: block; font-size: 0.75rem; font-weight: 600; color: #5a6e6e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+  .respuesta-box textarea {
+    width: 100%; border: 1.5px solid #ece7e0; padding: 0.6rem 0.75rem; border-radius: 4px;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; resize: vertical; background: #fdfcfa; margin-bottom: 0.6rem;
+  }
+  .respuesta-box textarea:focus { outline: none; border-color: #d37e2c; }
+  .btn-guardar-respuesta { background: #1e2a2a; color: white; }
+  .btn-guardar-respuesta:hover { background: #d37e2c; }
+  .respuesta-guardado { font-size: 0.78rem; color: #1e6b3a; margin-left: 0.6rem; display: none; }
+  .respuesta-guardado.show { display: inline; }
+
+  .estado-vacio { text-align: center; padding: 3rem 1rem; color: #8a9a9a; }
+  .estado-vacio i { display: block; font-size: 1.8rem; margin-bottom: 0.7rem; color: #d37e2c; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>Crisve Travel</h1>
+    <p>Panel de gestión de reseñas</p>
+    <div class="login-error" id="loginError"></div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="loginEmail">Correo</label>
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-dark" id="loginBtn"><i class="fas fa-lock"></i> Entrar</button>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="container">
+    <div class="admin-header">
+      <div>
+        <h1>Panel de reseñas</h1>
+        <div class="sub" id="userEmail"></div>
+      </div>
+      <button class="btn-logout" id="logoutBtn"><i class="fas fa-arrow-right-from-bracket"></i> Salir</button>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-estado="pendiente">Pendientes <span class="count" id="countPendiente">0</span></button>
+      <button class="admin-tab" data-estado="publicado">Publicadas <span class="count" id="countPublicado">0</span></button>
+      <button class="admin-tab" data-estado="rechazado">Rechazadas <span class="count" id="countRechazado">0</span></button>
+    </div>
+
+    <div id="listaResenas">
+      <div class="estado-vacio"><i class="fas fa-spinner fa-spin"></i>Cargando…</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import {
+    getFirestore, collection, query, where, orderBy, onSnapshot,
+    doc, updateDoc, deleteDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { firebaseConfig } from "./firebase-config.js";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const RESENAS_COLLECTION = "resenas";
+
+  /* ---------- Login ---------- */
+  const loginScreen = document.getElementById("loginScreen");
+  const dashboard = document.getElementById("dashboard");
+  const loginForm = document.getElementById("loginForm");
+  const loginError = document.getElementById("loginError");
+  const loginBtn = document.getElementById("loginBtn");
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.classList.remove("show");
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Entrando...`;
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        document.getElementById("loginEmail").value.trim(),
+        document.getElementById("loginPassword").value
+      );
+    } catch (err) {
+      loginError.textContent = "Correo o contraseña incorrectos.";
+      loginError.classList.add("show");
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = `<i class="fas fa-lock"></i> Entrar`;
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginScreen.style.display = "none";
+      dashboard.style.display = "block";
+      document.getElementById("userEmail").textContent = user.email;
+      iniciarListeners();
+    } else {
+      loginScreen.style.display = "flex";
+      dashboard.style.display = "none";
+    }
+  });
+
+  /* ---------- Tabs ---------- */
+  let estadoActivo = "pendiente";
+  const dataPorEstado = { pendiente: [], publicado: [], rechazado: [] };
+  const tabs = document.querySelectorAll(".admin-tab");
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      estadoActivo = tab.dataset.estado;
+      renderLista();
+    });
+  });
+
+  /* ---------- Firestore listeners (tiempo real) ---------- */
+  let listenersIniciados = false;
+  function iniciarListeners() {
+    if (listenersIniciados) return;
+    listenersIniciados = true;
+
+    ["pendiente", "publicado", "rechazado"].forEach(estado => {
+      const q = query(
+        collection(db, RESENAS_COLLECTION),
+        where("estado", "==", estado),
+        orderBy("fechaCreacion", "desc")
+      );
+      onSnapshot(q, (snap) => {
+        dataPorEstado[estado] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        document.getElementById(`count${estado.charAt(0).toUpperCase() + estado.slice(1)}`).textContent = dataPorEstado[estado].length;
+        if (estadoActivo === estado) renderLista();
+      }, (err) => {
+        console.error(`Error escuchando ${estado}:`, err);
+      });
+    });
+  }
+
+  /* ---------- Render ---------- */
+  const lista = document.getElementById("listaResenas");
+
+  function estrellasHTML(valoracion) {
+    return "★".repeat(valoracion || 0) + "☆".repeat(5 - (valoracion || 0));
+  }
+
+  function formatearFecha(ts) {
+    if (!ts || !ts.toDate) return "";
+    return ts.toDate().toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  function escapeHtml(texto) {
+    const div = document.createElement("div");
+    div.textContent = texto;
+    return div.innerHTML;
+  }
+
+  function renderLista() {
+    const items = dataPorEstado[estadoActivo];
+    if (!items || items.length === 0) {
+      const mensajes = {
+        pendiente: "No hay reseñas pendientes por revisar.",
+        publicado: "Aún no has publicado ninguna reseña.",
+        rechazado: "No hay reseñas rechazadas."
+      };
+      lista.innerHTML = `<div class="estado-vacio"><i class="fas fa-inbox"></i>${mensajes[estadoActivo]}</div>`;
+      return;
+    }
+
+    lista.innerHTML = "";
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "resena-card";
+
+      let acciones = "";
+      if (estadoActivo === "pendiente") {
+        acciones = `
+          <button class="btn btn-accion btn-publicar" data-accion="publicar" data-id="${item.id}"><i class="fas fa-check"></i> Publicar</button>
+          <button class="btn btn-accion btn-rechazar" data-accion="rechazar" data-id="${item.id}"><i class="fas fa-xmark"></i> Rechazar</button>
+        `;
+      } else if (estadoActivo === "publicado") {
+        acciones = `
+          <button class="btn btn-accion btn-restaurar" data-accion="pendiente" data-id="${item.id}"><i class="fas fa-rotate-left"></i> Quitar de publicadas</button>
+          <button class="btn btn-accion btn-eliminar" data-accion="eliminar" data-id="${item.id}"><i class="fas fa-trash"></i> Eliminar</button>
+        `;
+      } else {
+        acciones = `
+          <button class="btn btn-accion btn-restaurar" data-accion="pendiente" data-id="${item.id}"><i class="fas fa-rotate-left"></i> Restaurar a pendiente</button>
+          <button class="btn btn-accion btn-eliminar" data-accion="eliminar" data-id="${item.id}"><i class="fas fa-trash"></i> Eliminar</button>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="resena-top">
+          <div>
+            <strong>${(item.nombre || "Anónimo").replace(/</g, "&lt;")}</strong>
+            <div class="estrellas">${estrellasHTML(item.valoracion)}</div>
+          </div>
+          <div class="resena-fecha">${formatearFecha(item.fechaCreacion)}</div>
+        </div>
+        <p class="resena-mensaje">${(item.mensaje || "").replace(/</g, "&lt;")}</p>
+        ${item.fotoURL ? `<img class="resena-foto" src="${item.fotoURL}" alt="Foto adjunta">` : ""}
+        <div class="resena-acciones">${acciones}</div>
+        <div class="respuesta-box">
+          <label>Respuesta pública de Crisve Travel</label>
+          <textarea class="respuesta-input" data-id="${item.id}" rows="2" maxlength="400" placeholder="Escribe una respuesta que se mostrará debajo de esta reseña en la web...">${escapeHtml(item.respuesta || "")}</textarea>
+          <button class="btn btn-accion btn-guardar-respuesta" data-accion="responder" data-id="${item.id}"><i class="fas fa-reply"></i> Guardar respuesta</button>
+          <span class="respuesta-guardado" data-guardado-id="${item.id}"><i class="fas fa-check"></i> Guardada</span>
+        </div>
+      `;
+      lista.appendChild(card);
+    });
+  }
+
+  /* ---------- Acciones ---------- */
+  lista.addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-accion]");
+    if (!btn) return;
+    const { accion, id } = btn.dataset;
+    const ref = doc(db, RESENAS_COLLECTION, id);
+
+    btn.disabled = true;
+    try {
+      if (accion === "publicar") {
+        await updateDoc(ref, { estado: "publicado", fechaPublicacion: serverTimestamp() });
+      } else if (accion === "rechazar") {
+        await updateDoc(ref, { estado: "rechazado" });
+      } else if (accion === "pendiente") {
+        await updateDoc(ref, { estado: "pendiente", fechaPublicacion: null });
+      } else if (accion === "eliminar") {
+        if (confirm("¿Eliminar esta reseña de forma permanente?")) {
+          await deleteDoc(ref);
+        }
+      } else if (accion === "responder") {
+        const textarea = lista.querySelector(`.respuesta-input[data-id="${id}"]`);
+        const texto = textarea.value.trim();
+        await updateDoc(ref, {
+          respuesta: texto || null,
+          fechaRespuesta: texto ? serverTimestamp() : null
+        });
+        const aviso = lista.querySelector(`.respuesta-guardado[data-guardado-id="${id}"]`);
+        if (aviso) {
+          aviso.classList.add("show");
+          setTimeout(() => aviso.classList.remove("show"), 2500);
+        }
+      }
+    } catch (err) {
+      console.error("Error actualizando reseña:", err);
+      alert("No se pudo completar la acción. Inténtalo de nuevo.");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

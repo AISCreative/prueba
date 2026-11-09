@@ -1,0 +1,12 @@
+CRISVE TRAVEL V2 — FOTOS GRANDES Y PANEL A JUEGO
+
+Cambios:
+- Portada con carrusel fotográfico a todo el ancho, texto sobre la foto y navegación manual.
+- Destinos: 2 tarjetas grandes por fila en ordenador y 1 por fila en móvil.
+- Fotografías de ofertas más grandes.
+- Panel de administración con el mismo blanco, naranja y tipografía que la web.
+- Se mantienen IDs, JavaScript, Firebase, reseñas, categorías, viajes y SEO de pruebas.
+
+Para actualizar el repositorio prueba, puedes sustituir SOLO index.html y admin-v2.html. Si usas /admin, sustituye también admin.html. No es necesario modificar Firebase.
+
+IMPORTANTE: el administrador puede usar modo local o Firebase según se haya iniciado sesión. No se ha verificado el guardado remoto con una cuenta real.

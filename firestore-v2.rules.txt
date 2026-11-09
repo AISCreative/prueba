@@ -1,0 +1,36 @@
+// BORRADOR: NO PUBLICAR sin sustituir ADMIN_UID_REAL por el UID del usuario de Verónica.
+// Copia de las reglas originales con acceso administrativo limitado por UID.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function esAdmin() { return request.auth != null && request.auth.uid == 'ADMIN_UID_REAL'; }
+
+    match /resenas/{resenaId} {
+      allow get, list: if esAdmin() || resource.data.estado == 'publicado';
+      allow create: if request.resource.data.estado == 'pendiente'
+        && request.resource.data.fechaPublicacion == null
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 80
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() > 0
+        && request.resource.data.mensaje.size() <= 600
+        && request.resource.data.valoracion is number
+        && request.resource.data.valoracion >= 1
+        && request.resource.data.valoracion <= 5;
+      allow update, delete: if esAdmin();
+    }
+    match /viajes_v2/{id} {
+      allow get, list: if esAdmin() || resource.data.publicado == true;
+      allow create, update, delete: if esAdmin();
+    }
+    match /ofertas_v2/{id} {
+      allow get, list: if esAdmin() || resource.data.publicado == true;
+      allow create, update, delete: if esAdmin();
+    }
+    match /portada_v2/{id} {
+      allow get, list: if esAdmin() || resource.data.publicado == true;
+      allow create, update, delete: if esAdmin();
+    }
+  }
+}
